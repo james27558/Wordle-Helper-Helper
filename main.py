@@ -40,6 +40,22 @@ class WordleHelperHelper:
         self.mainloop()
 
     def mainloop(self):
+        def parseIndexList(index_string):
+            """
+            Parses a string that is of the format "number,number,number..." and converts it to a list of ints shifted
+            down by 1. Used for parsing user inputted letter positions. The user should input intuitive indexes (1
+            indexed) for the letter positions which get converted to the friendlier 0 indexed and returned
+            :param index_string:
+            :return:
+            """
+            result = index_string.split(",")
+            result = [] if result == ["None"] else result
+
+            result = list(map(lambda x: int(x) - 1, result))
+
+            return result
+
+
         while True:
             print("1. Add guess")
             print("2. Print Words")
@@ -54,13 +70,9 @@ class WordleHelperHelper:
 
                 guess_info = input_string.split(" ")
                 guess = guess_info[0]
-                placed_letter_indexes = guess_info[1].split(",")
-                placed_letter_indexes = [] if placed_letter_indexes == ["None"] else placed_letter_indexes
-                placed_letter_indexes = list(map(lambda x: int(x) - 1, placed_letter_indexes))
 
-                good_letter_indexes = guess_info[2].split(",")
-                good_letter_indexes = [] if good_letter_indexes == ["None"] else good_letter_indexes
-                good_letter_indexes = list(map(lambda x: int(x) - 1, good_letter_indexes))
+                placed_letter_indexes = parseIndexList(guess_info[1])
+                good_letter_indexes = parseIndexList(guess_info[2])
 
                 self.parseGuessWithPlacedPlusGoodLetters(guess, placed_letter_indexes, good_letter_indexes)
 
