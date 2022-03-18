@@ -35,10 +35,6 @@ class WordleHelperHelper:
 
         self.search_mode = SearchMode.LINEAR
 
-        self.fetchAndStoreWords()
-
-        self.mainloop()
-
     def mainloop(self):
         def parseIndexList(index_string):
             """
@@ -54,7 +50,6 @@ class WordleHelperHelper:
             result = list(map(lambda x: int(x) - 1, result))
 
             return result
-
 
         while True:
             print("1. Add guess")
@@ -200,8 +195,6 @@ class WordleHelperHelper:
             if not valid:
                 continue  # Outer loop
 
-            # TODO: Account for good letter positions
-
             for good_letter_info in self.good_letters:
                 letter = good_letter_info[0]
                 position = good_letter_info[1]
@@ -239,4 +232,7 @@ class SearchMode(Enum):
     LINEAR = 0
 
 
-whh = WordleHelperHelper()
+if __name__ == '__main__':
+    whh = WordleHelperHelper()
+    whh.fetchAndStoreWords()
+    whh.mainloop()
