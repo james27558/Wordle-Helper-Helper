@@ -8,15 +8,34 @@ from bs4 import BeautifulSoup
 
 class WordleHelperHelper:
     def __init__(self):
+        """
+        List of guessed words
+        """
         self.guesses = []
-        self.words = []
+
+        """
+        List of all possible answers
+        """
+        self.all_answers = []
+
+        """
+        List of characters that are the bad letters for the current word
+        """
         self.bad_letters = []
+
+        """
+        2D list of pairs of characters and 0 indexed positions in the word
+        """
         self.good_letters = []
+
+        """
+        List of 5 None or characters, that represent the placed letters in the current word
+        """
         self.placed_letters = [None, None, None, None, None]
 
         self.search_mode = SearchMode.LINEAR
 
-        self.fetchWords()
+        self.fetchAndStoreWords()
 
         self.mainloop()
 
@@ -54,7 +73,11 @@ class WordleHelperHelper:
             elif choice == "5":
                 self.hardReset()
 
-    def fetchWords(self):
+    def fetchAndStoreWords(self):
+        """
+        Fetches the list of words from the github repository and stores them in the class
+        :return:
+        """
         headers = requests.utils.default_headers()
         headers.update({
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
@@ -65,7 +88,7 @@ class WordleHelperHelper:
 
         soup = BeautifulSoup(page.content, "lxml")
 
-        self.words = soup.p.text.split("\n")
+        self.all_answers = soup.p.text.split("\n")
 
     def setGuess(self, guess: string):
         self.guesses.append(guess)
@@ -83,6 +106,10 @@ class WordleHelperHelper:
                 self.bad_letters.append(c)
 
     def getGoodLetterList(self):
+        """
+        Returns a list of characters in good letters
+        :return:
+        """
         return [x[0] for x in self.good_letters]
 
     def getPlacedLettersList(self):
@@ -147,7 +174,7 @@ class WordleHelperHelper:
 
     def filterWords(self):
         valid_words = []
-        for word in self.words:
+        for word in self.all_answers:
             valid = True
 
             # Loop through the placed letters, if it isn't present in the correct position then mark the work as invalid
