@@ -44,7 +44,7 @@ class WordleHelperHelperTestCase(unittest.TestCase):
         self.whh.setPlacedLetter("a", 1)
 
         self.assertListEqual(self.whh.bad_letters, [])
-        self.assertListEqual(self.whh.getGoodLetterList(), ["a"])
+        self.assertTrue("a" in self.whh.getPlacedLettersList())
 
     def test_GoodLetterPositions_EliminatesWordsWithThatLetterInThatPosition(self):
         self.whh.setGoodLetter("a", 1)

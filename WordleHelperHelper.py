@@ -141,6 +141,9 @@ class WordleHelperHelper:
         self.setGuess(guess)
 
     def setBadLetter(self, bad_letter: string):
+        if bad_letter in self.getGoodLetterList() or bad_letter in self.getPlacedLettersList():
+            raise ValueError("Letter " + bad_letter + " is already in the good/placed letters list")
+
         self.bad_letters.append(bad_letter)
 
     def setGoodLetter(self, good_letter: string):
@@ -148,6 +151,10 @@ class WordleHelperHelper:
 
     def setGoodLetter(self, good_letter: string, position: int):
         self.good_letters.append((good_letter, position))
+
+        # Removes good letter from the list of bad letters if present
+        if good_letter in self.bad_letters:
+            self.bad_letters.remove(good_letter)
 
     def setPlacedLetter(self, letter: string, position: int):
         """
@@ -158,6 +165,10 @@ class WordleHelperHelper:
         """
 
         self.placed_letters[position] = letter
+
+        # Removes placed letter from the list of bad letters if present
+        if letter in self.bad_letters:
+            self.bad_letters.remove(letter)
 
     def softReset(self):
         """
