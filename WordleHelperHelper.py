@@ -210,6 +210,13 @@ class WordleHelperHelper:
                     valid = False
                     break
 
+                # Loop through the good letters, if there is a good letter letter in the position of that good letter
+                # then the word can't be a candidate
+                for index, character in enumerate(word):
+                    if character == letter and position == index:
+                        valid = False
+                        break
+
             # If the word has been marked as invalid then skip checking other attributes
             if not valid:
                 continue  # Outer loop
