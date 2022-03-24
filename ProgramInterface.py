@@ -2,12 +2,14 @@ import string
 import tkinter as tk
 
 from GuessBars import GuessBarEditable, GuessBar
+from WordleHelperHelper import WordleHelperHelper
 
 
 class ProgramInterface(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
-        # self.whh = WordleHelperHelper()
+        self.whh = WordleHelperHelper()
+        self.whh.fetchAndStoreWords()
 
         # (Pycharm IDE Annotation)
         # noinspection PyTypeChecker
@@ -34,6 +36,26 @@ class ProgramInterface(tk.Tk):
 
             if len(full_word) == 5:
                 self.addNewGuessToBoard(full_word)
+
+    def addGoodLetter(self, letter, position):
+        f"""
+        Wrapper for setGoodLetter in @{WordleHelperHelper}
+        :param letter:
+        :param position:
+        :return:
+        """
+
+        self.whh.setGoodLetter(letter, position)
+
+    def addPlacedLetter(self, letter, position):
+        f"""
+        Wrapper for setPlacedLetter in @{WordleHelperHelper}
+        :param letter:
+        :param position:
+        :return:
+        """
+
+        self.whh.setPlacedLetter(letter, position)
 
     def initialiseWidgets(self):
         """

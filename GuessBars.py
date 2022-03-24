@@ -20,14 +20,13 @@ class GuessBar(tk.Frame):
         else:
             self.word = [tk.StringVar() for x in range(5)]
 
-        self.letter_boxes = [LetterBox(self, tv=self.word[x]) for x in range(5)]
+        self.letter_boxes = [LetterBox(self, tv=self.word[x], position=x) for x in range(5)]
 
         for i, v in enumerate(self.letter_boxes):
             self.letter_boxes[i].grid(row=0, column=i)
 
     def getFullWord(self):
         return "".join([x.get() for x in self.word])
-
 
     def getLetterBoxes(self):
         return self.letter_boxes
