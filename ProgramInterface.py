@@ -73,6 +73,8 @@ class ProgramInterface(tk.Tk):
         :return:
         """
 
+        # TODO: Extract bad letters when adding guess
+
         # Create the new guess
         new_bar = GuessBar(self, guess)
         new_bar.grid(row=self.next_guess_bar_row_index, column=0)
