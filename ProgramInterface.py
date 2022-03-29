@@ -16,7 +16,9 @@ class ProgramInterface(tk.Tk):
         self.current_guess_bar: GuessBarEditable = None
         self.next_guess_bar_row_index = 0
 
-        self.all_guess_bars = []
+        self.all_guess_bars: list[GuessBar] = []
+
+        self.hard_reset_button: tk.Button = None
 
         self.initialiseWidgets()
 
@@ -63,8 +65,30 @@ class ProgramInterface(tk.Tk):
         :return:
         """
         self.current_guess_bar = GuessBarEditable(self)
+        self.current_guess_bar.grid(column=0, row=self.next_guess_bar_row_index + 1, columnspan=5)
 
-        self.current_guess_bar.grid(column=0, row=self.next_guess_bar_row_index + 1)
+        self.hard_reset_button = tk.Button(self, text="Reset All Guesses", command=self.hardReset)
+        self.hard_reset_button.grid(row=1, column=7, columnspan=2)
+
+    def hardReset(self):
+        f"""
+        Hard resets the @{WordleHelperHelper} instance and deletes the guesses on the board
+        :return: 
+        """
+        self.whh.hardReset()
+
+        # Reset variables
+        self.next_guess_bar_row_index = 0
+
+        # Move up the current guess bar
+        self.current_guess_bar.grid(column=0, row=0, columnspan=5)
+
+        # Destroy all permanent guess bars
+        for guess in self.all_guess_bars:
+            guess.destroy()
+
+        # Clear the list of bars
+        self.all_guess_bars.clear()
 
     def addNewGuessToBoard(self, guess: string):
         """
@@ -77,7 +101,7 @@ class ProgramInterface(tk.Tk):
 
         # Create the new guess
         new_bar = GuessBar(self, guess)
-        new_bar.grid(row=self.next_guess_bar_row_index, column=0)
+        new_bar.grid(row=self.next_guess_bar_row_index, column=0, columnspan=5)
 
         # Add it to the list of bars
         self.all_guess_bars.append(new_bar)
@@ -86,7 +110,7 @@ class ProgramInterface(tk.Tk):
         self.next_guess_bar_row_index += 1
 
         # Move the editable guess box down
-        self.current_guess_bar.grid(column=0, row=self.next_guess_bar_row_index + 1)
+        self.current_guess_bar.grid(column=0, row=self.next_guess_bar_row_index + 1, columnspan=5)
 
         # Reset the word in the bar
         self.current_guess_bar.reset()
