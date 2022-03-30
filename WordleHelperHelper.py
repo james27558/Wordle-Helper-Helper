@@ -122,6 +122,9 @@ class WordleHelperHelper:
     def getPlacedLettersList(self):
         return self.placed_letters
 
+    def getPlacedLettersListWithoutNone(self):
+        return [x for x in self.placed_letters if x is not None]
+
     def getBadLettersList(self):
         return self.bad_letters
 
@@ -144,34 +147,35 @@ class WordleHelperHelper:
         self.setGuess(guess)
 
     def setBadLetter(self, bad_letter: string):
-        if bad_letter in self.getGoodLetterList() or bad_letter in self.getPlacedLettersList():
-            raise ValueError("Letter " + bad_letter + " is already in the good/placed letters list")
-
         self.bad_letters.append(bad_letter)
 
-    def setGoodLetter(self, good_letter: string):
-        self.good_letters.append((good_letter, -1))
-
     def setGoodLetter(self, good_letter: string, position: int):
-        self.good_letters.append((good_letter, position))
+        """
+        Sets a good letter in the current word. First remove the letter from the bad letters list if present
 
+        :param good_letter: Good letter
+        :param position: Position (0 indexed)
+        :return:
+        """
         # Removes good letter from the list of bad letters if present
         if good_letter in self.bad_letters:
-            self.bad_letters.remove(good_letter)
+            self.bad_letters = [x for x in self.bad_letters if x != good_letter]
+
+        self.good_letters.append((good_letter, position))
 
     def setPlacedLetter(self, letter: string, position: int):
         """
-        Sets a placed letter in the current word
+        Sets a placed letter in the current word. First remove the letter from the bad letters list if present
+
         :param letter: Placed letter
         :param position: Position (0 indexed)
         :return:
         """
-
-        self.placed_letters[position] = letter
-
         # Removes placed letter from the list of bad letters if present
         if letter in self.bad_letters:
-            self.bad_letters.remove(letter)
+            self.bad_letters = [x for x in self.bad_letters if x != letter]
+
+        self.placed_letters[position] = letter
 
     def deleteGoodLetter(self, good_letter: string, position: int):
         """
@@ -194,7 +198,8 @@ class WordleHelperHelper:
         :return:
         """
         if self.placed_letters[position] is None:
-            raise ValueError("Good letter '{}' is not at position {} so it can't be deleted".format(placed_letter, position))
+            raise ValueError(
+                "Good letter '{}' is not at position {} so it can't be deleted".format(placed_letter, position))
 
         self.placed_letters[position] = None
 
@@ -217,8 +222,11 @@ class WordleHelperHelper:
         :return:
         """
 
+        for l in self.getGoodLetterList() + self.getPlacedLettersListWithoutNone():
+            if l not in self.getBadLettersList():
+                self.setBadLetter(l)
+
         self.good_letters = []
-        self.bad_letters = []
         self.placed_letters = [None, None, None, None, None]
 
     def hardReset(self):
@@ -226,7 +234,9 @@ class WordleHelperHelper:
         Resets all fields used
         :return:
         """
-        self.softReset()
+        self.bad_letters = []
+        self.good_letters = []
+        self.placed_letters = [None, None, None, None, None]
         self.guesses = []
 
     def filterWords(self):

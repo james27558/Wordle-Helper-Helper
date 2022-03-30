@@ -22,30 +22,53 @@ class LetterBox(tk.Label):
         self.program_interface: ProgramInterface.ProgramInterface = self.winfo_toplevel()
 
     def parseLeftClick(self, click):
+        """
+        Sets placed letter
+
+        :param click:
+        :return:
+        """
+        if self.good_letter: return
+
         if not self.placed_letter:
             self.program_interface.whh.setPlacedLetter(self.tv.get(), self.position)
-            self.placedLetterColourScheme()
+            self.__placedLetterColourScheme()
             self.placed_letter = True
 
         else:
-            self.defaultColourScheme()
+            self.program_interface.whh.deletePlacedLetter(self.tv.get(), self.position)
+            self.__defaultColourScheme()
             self.placed_letter = False
 
     def parseRightClick(self, click):
+        """
+        Sets good letter
+
+        :param click:
+        :return:
+        """
+        if self.placed_letter: return
+
         if not self.good_letter:
             self.program_interface.whh.setGoodLetter(self.tv.get(), self.position)
-            self.goodLetterColourScheme()
+            self.__goodLetterColourScheme()
             self.good_letter = True
 
         else:
-            self.defaultColourScheme()
+            self.program_interface.whh.deleteGoodLetter(self.tv.get(), self.position)
+            self.__defaultColourScheme()
             self.good_letter = False
 
-    def defaultColourScheme(self):
+    def softResetColourScheme(self):
+        self.good_letter = False
+        self.placed_letter = False
+        self.__defaultColourScheme()
+
+    def __defaultColourScheme(self):
         self.configure(bg="black", fg="white")
 
-    def placedLetterColourScheme(self):
+    def __placedLetterColourScheme(self):
         self.configure(bg="green")
 
-    def goodLetterColourScheme(self):
+    def __goodLetterColourScheme(self):
         self.configure(bg="yellow", fg="black")
