@@ -68,7 +68,10 @@ class ProgramInterface(tk.Tk):
         self.current_guess_bar.grid(column=0, row=self.next_guess_bar_row_index + 1, columnspan=5)
 
         self.hard_reset_button = tk.Button(self, text="Reset All Guesses", command=self.hardReset)
-        self.hard_reset_button.grid(row=1, column=7, columnspan=2)
+        self.hard_reset_button.grid(row=0, column=7, columnspan=2)
+
+        self.soft_reset_button = tk.Button(self, text="Soft Reset Board", command=self.softReset)
+        self.soft_reset_button.grid(row=1, column=7, columnspan=2)
 
     def hardReset(self):
         f"""
@@ -90,14 +93,31 @@ class ProgramInterface(tk.Tk):
         # Clear the list of bars
         self.all_guess_bars.clear()
 
+    def softReset(self):
+        f"""
+        Soft resets the @{WordleHelperHelper} instance and deletes the good/placed letters on the board
+        :return: 
+        """
+        self.whh.softReset()
+
+        for bar in self.all_guess_bars:
+            for letter_box in bar.letter_boxes:
+                letter_box.softResetColourScheme()
+
+
+
     def addNewGuessToBoard(self, guess: string):
         """
-        Adds a new static guess to the board and moves down the editable guess box
+        Adds a new static guess to the board and moves down the editable guess box, adding the letters in the guess to
+        the bad letters list. The user will mark the letters on the board good or placed, removing them from the bad
+        letters list
+
         :param guess: Word to add to the board
         :return:
         """
 
-        # TODO: Extract bad letters when adding guess
+        # Extract bad letters when adding guess
+        self.whh.extractBadLetters(guess)
 
         # Create the new guess
         new_bar = GuessBar(self, guess)
