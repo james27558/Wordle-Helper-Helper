@@ -52,6 +52,39 @@ class WordleHelperHelperTestCase(unittest.TestCase):
         for word in self.whh.filterWords():
             self.assertTrue("a" in word and word[1] != "a")
 
+    def test_DeleteExistingGoodLetter_DeletesGoodLetter(self):
+        self.whh.setGoodLetter("a", 1)
+
+        self.whh.deleteGoodLetter("a", 1)
+
+        self.assertTrue(len(self.whh.getGoodLetterList()) == 0)
+
+    def test_DeleteNonExistentGoodLetter_RaisesValueError(self):
+        self.assertRaises(ValueError, self.whh.deleteGoodLetter, "a", 1)
+
+    def test_DeleteExistingPlacedLetter_DeletesPlacedLetter(self):
+        self.whh.setPlacedLetter("a", 1)
+
+        self.whh.deletePlacedLetter("a", 1)
+
+        self.assertTrue(len(self.whh.getGoodLetterList()) == 0)
+
+    def test_DeleteNonExistentPlacedLetter_RaisesValueError(self):
+        self.assertRaises(ValueError, self.whh.deletePlacedLetter, "a", 1)
+
+    def test_DeleteLonePlacedLetter_AddsLetterToBadLetters(self):
+        self.whh.setPlacedLetter("a", 1)
+        self.assertTrue("a" not in self.whh.getBadLettersList())
+
+        self.whh.deletePlacedLetter("a", 1)
+        self.assertTrue("a" in self.whh.getBadLettersList())
+
+    def test_DeleteLoneGoodLetter_AddsLetterToBadLetters(self):
+        self.whh.setGoodLetter("a", 1)
+        self.assertTrue("a" not in self.whh.getBadLettersList())
+
+        self.whh.deleteGoodLetter("a", 1)
+        self.assertTrue("a" in self.whh.getBadLettersList())
 
 if __name__ == '__main__':
     unittest.main()

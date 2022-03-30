@@ -122,6 +122,9 @@ class WordleHelperHelper:
     def getPlacedLettersList(self):
         return self.placed_letters
 
+    def getBadLettersList(self):
+        return self.bad_letters
+
     def parseGuessWithPlacedPlusGoodLetters(self, guess: string, placed_indexes: List[int], good_indexes: List[int]):
         """
 
@@ -169,6 +172,42 @@ class WordleHelperHelper:
         # Removes placed letter from the list of bad letters if present
         if letter in self.bad_letters:
             self.bad_letters.remove(letter)
+
+    def deleteGoodLetter(self, good_letter: string, position: int):
+        """
+        Removes the good letter at a position
+        :param good_letter: Letter to remove
+        :param position: Position to remove from
+        :raises ValueError if letter isn't present at given position
+        :return:
+        """
+
+        self.good_letters.remove((good_letter, position))
+        self.addLetterToBadListIfNotInGoodOrPlaced(good_letter)
+
+    def deletePlacedLetter(self, placed_letter: string, position: int):
+        """
+        Removes the placed letter at a position
+        :param placed_letter: Letter to remove
+        :param position: Position to remove from
+        :raises ValueError if letter isn't present at given position
+        :return:
+        """
+        if self.placed_letters[position] is None:
+            raise ValueError("Good letter '{}' is not at position {} so it can't be deleted".format(placed_letter, position))
+
+        self.placed_letters[position] = None
+
+        # If the removed placed letter doesn't appear anywhere else as a good letter then
+        self.addLetterToBadListIfNotInGoodOrPlaced(placed_letter)
+
+    def addLetterToBadListIfNotInGoodOrPlaced(self, letter: str):
+        """
+        If a letter is not in any of the good or placed list, then it is added to the list of bad letters
+        :return:
+        """
+        if letter not in self.getGoodLetterList() and letter not in self.getPlacedLettersList():
+            self.setBadLetter(letter)
 
     def softReset(self):
         """
