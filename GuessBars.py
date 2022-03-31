@@ -1,3 +1,4 @@
+import string
 import tkinter as tk
 
 from LetterBox import LetterBox
@@ -26,6 +27,11 @@ class GuessBar(tk.Frame):
             self.letter_boxes[i].grid(row=0, column=i)
 
     def getFullWord(self):
+        """
+        Get all the letters in the letter boxes joined into one string, the contents of blank boxes will not appear
+
+        :return: All letters as string
+        """
         return "".join([x.get() for x in self.word])
 
     def getLetterBoxes(self):

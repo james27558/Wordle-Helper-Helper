@@ -10,7 +10,7 @@ class LetterBox(tk.Label):
         :param tv:
         :param position: 0 indexed position
         """
-        super(LetterBox, self).__init__(master, bg="black", fg="white", textvariable=tv)
+        super(LetterBox, self).__init__(master, bg="black", fg="white", padx=5, pady=5, width=1, textvariable=tv)
         self.position = position
         self.tv: tk.StringVar = tv
         self.bind("<Button-1>", self.parseLeftClick)
