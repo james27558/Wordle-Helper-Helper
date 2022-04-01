@@ -9,7 +9,7 @@ class GuessBar(tk.Frame):
     Wraps a frame to show and represent a guess on the board, editable or otherwise
     """
 
-    def __init__(self, master, word=None):
+    def __init__(self, master, word=None, letter_boxes_colour_locked=False):
         super(GuessBar, self).__init__(master)
 
         # If the word is given then it must be 5 letters
@@ -21,7 +21,9 @@ class GuessBar(tk.Frame):
         else:
             self.word = [tk.StringVar() for x in range(5)]
 
-        self.letter_boxes = [LetterBox(self, tv=self.word[x], position=x) for x in range(5)]
+        # Initialise the letter boxes, if the letter_boxes_colour_locked is True then the letter boxes colours will be
+        # locked to stop the user marking them as good/placed. Used for the editable guess bar
+        self.letter_boxes = [LetterBox(self, tv=self.word[x], position=x, colour_locked=letter_boxes_colour_locked) for x in range(5)]
 
         for i, v in enumerate(self.letter_boxes):
             self.letter_boxes[i].grid(row=0, column=i)
@@ -45,7 +47,8 @@ class GuessBarEditable(GuessBar):
     """
 
     def __init__(self, master):
-        super().__init__(master)
+        # Init the GuessBar superclass and tell it to lock the colours (good/placed) of letter boxes
+        super().__init__(master, letter_boxes_colour_locked=True)
 
         # Index of the next letter that is empty, 6 if none
         self.next_empty_letter_index = 0

@@ -4,7 +4,7 @@ import ProgramInterface
 
 
 class LetterBox(tk.Label):
-    def __init__(self, master, tv, position):
+    def __init__(self, master, tv, position, colour_locked = False):
         """
         :param master:
         :param tv:
@@ -12,6 +12,7 @@ class LetterBox(tk.Label):
         """
         super(LetterBox, self).__init__(master, bg="black", fg="white", padx=5, pady=5, width=1, textvariable=tv)
         self.position = position
+        self.colour_locked = colour_locked
         self.tv: tk.StringVar = tv
         self.bind("<Button-1>", self.parseLeftClick)
         self.bind("<Button-3>", self.parseRightClick)
@@ -28,7 +29,7 @@ class LetterBox(tk.Label):
         :param click:
         :return:
         """
-        if self.good_letter: return
+        if self.good_letter or self.colour_locked: return
 
         if not self.placed_letter:
             self.program_interface.whh.setPlacedLetter(self.tv.get(), self.position)
@@ -47,7 +48,7 @@ class LetterBox(tk.Label):
         :param click:
         :return:
         """
-        if self.placed_letter: return
+        if self.placed_letter or self.colour_locked: return
 
         if not self.good_letter:
             self.program_interface.whh.setGoodLetter(self.tv.get(), self.position)

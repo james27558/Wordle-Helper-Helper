@@ -65,7 +65,7 @@ class ProgramInterface(tk.Tk):
         :return:
         """
         self.current_guess_bar = GuessBarEditable(self)
-        self.current_guess_bar.grid(column=0, row=self.next_guess_bar_row_index + 1, columnspan=5)
+        self.current_guess_bar.grid(column=0, row=0, columnspan=5)
 
         self.hard_reset_button = tk.Button(self, text="Reset All Guesses", command=self.hardReset)
         self.hard_reset_button.grid(row=0, column=7, columnspan=2)
