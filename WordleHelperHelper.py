@@ -16,7 +16,7 @@ class WordleHelperHelper:
         """
         List of all possible answers
         """
-        self.all_answers = []
+        self.all_answers: list[str] = []
 
         """
         List of characters that are the bad letters for the current word
@@ -32,6 +32,11 @@ class WordleHelperHelper:
         List of 5 None or characters, that represent the placed letters in the current word
         """
         self.placed_letters = [None, None, None, None, None]
+
+        """
+        List of all the duplicate letters
+        """
+        self.duplicate_letters = []
 
         self.search_mode = SearchMode.LINEAR
 
@@ -121,6 +126,9 @@ class WordleHelperHelper:
 
     def getPlacedLettersList(self):
         return self.placed_letters
+
+    def getDuplicateLetters(self):
+        return self.duplicate_letters
 
     def getPlacedLettersListWithoutNone(self):
         return [x for x in self.placed_letters if x is not None]
@@ -228,6 +236,7 @@ class WordleHelperHelper:
 
         self.good_letters = []
         self.placed_letters = [None, None, None, None, None]
+        self.duplicate_letters = []
 
     def hardReset(self):
         """
@@ -239,10 +248,28 @@ class WordleHelperHelper:
         self.placed_letters = [None, None, None, None, None]
         self.guesses = []
 
+    def setDuplicateLetter(self, letter):
+        """
+        Add letter to the duplicate letters list
+        :param letter: Letter to add
+        :return:
+        """
+        self.duplicate_letters.append(letter)
+
     def filterWords(self):
-        valid_words = []
+        valid_words: list[str] = []
         for word in self.all_answers:
             valid = True
+
+            # Loop through the duplicate letters, if any of them aren't duplicates in the word, then mark it as invalid
+            for index, letter in enumerate(self.getDuplicateLetters()):
+                if word.count(letter) < 2:
+                    valid = False
+                    break
+
+            # If the word has been marked as invalid then skip checking other attributes
+            if not valid:
+                continue  # Outer loop
 
             # Loop through the placed letters, if it isn't present in the correct position then mark the work as invalid
             for index, letter in enumerate(self.getPlacedLettersList()):
