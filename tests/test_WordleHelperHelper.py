@@ -83,13 +83,21 @@ class WordleHelperHelperTestCase(unittest.TestCase):
         self.whh.deleteGoodLetter("a", 1)
         self.assertTrue("a" in self.whh.getBadLettersList())
 
-    def test_RevealingDuplicatePlacedGoodLetter_EliminatesWordsWithoutThatDuplicateLetter(self):
+
+    def test_RevealingDuplicateLetter_EliminatesWordsWithoutThatDuplicateLetter(self):
+        self.whh.setDuplicateLetter("b")
+
+        for word in self.whh.filterWords():
+            self.assertTrue(word.count("b") > 1, word + " has 1 or fewer b's")
+
+    def test_RevealingDuplicatePlacedGoodLetter_EliminatesWordsWithoutThatDuplicateLetterAndGoodLetter(self):
         self.whh.setPlacedLetter("b", 1)
         self.whh.setGoodLetter("b", 2)
         self.whh.setDuplicateLetter("b")
 
         for word in self.whh.filterWords():
             self.assertTrue(word.count("b") > 1, word + " has 1 or fewer b's")
+            self.assertTrue(word[1] == "b")
 
 
 if __name__ == '__main__':
