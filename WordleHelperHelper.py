@@ -246,15 +246,17 @@ class WordleHelperHelper:
         self.bad_letters = []
         self.good_letters = []
         self.placed_letters = [None, None, None, None, None]
+        self.duplicate_letters = []
         self.guesses = []
 
     def setDuplicateLetter(self, letter):
         """
-        Add letter to the duplicate letters list
+        Add letter to the duplicate letters list if it isn't already in there
         :param letter: Letter to add
         :return:
         """
-        self.duplicate_letters.append(letter)
+        if letter not in self.getDuplicateLetters():
+            self.duplicate_letters.append(letter)
 
     def filterWords(self):
         valid_words: list[str] = []

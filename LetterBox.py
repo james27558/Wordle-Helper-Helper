@@ -11,6 +11,7 @@ class LetterBox(tk.Label):
         :param position: 0 indexed position
         """
         super(LetterBox, self).__init__(master, bg="black", fg="white", padx=5, pady=5, width=1, textvariable=tv)
+        self.my_master = master
         self.position = position
         self.colour_locked = colour_locked
         self.tv: tk.StringVar = tv
@@ -35,6 +36,7 @@ class LetterBox(tk.Label):
             self.program_interface.whh.setPlacedLetter(self.tv.get(), self.position)
             self.__placedLetterColourScheme()
             self.placed_letter = True
+            self.my_master.addDuplicateLettersToHelper()
 
         else:
             self.program_interface.whh.deletePlacedLetter(self.tv.get(), self.position)
@@ -54,6 +56,7 @@ class LetterBox(tk.Label):
             self.program_interface.whh.setGoodLetter(self.tv.get(), self.position)
             self.__goodLetterColourScheme()
             self.good_letter = True
+            self.my_master.addDuplicateLettersToHelper()
 
         else:
             self.program_interface.whh.deleteGoodLetter(self.tv.get(), self.position)
@@ -64,6 +67,15 @@ class LetterBox(tk.Label):
         self.good_letter = False
         self.placed_letter = False
         self.__defaultColourScheme()
+
+    def getLetter(self):
+        """
+        Gets the letter in this letter box
+
+        :return: Letter in the letter box
+        """
+
+        return self.tv.get()
 
     def __defaultColourScheme(self):
         self.configure(bg="black", fg="white")

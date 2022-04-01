@@ -1,7 +1,7 @@
 import string
 import tkinter as tk
-
-from LetterBox import LetterBox
+import LetterBox
+import ProgramInterface
 
 
 class GuessBar(tk.Frame):
@@ -11,6 +11,7 @@ class GuessBar(tk.Frame):
 
     def __init__(self, master, word=None, letter_boxes_colour_locked=False):
         super(GuessBar, self).__init__(master)
+        self.program_interface: ProgramInterface.ProgramInterface = self.winfo_toplevel()
 
         # If the word is given then it must be 5 letters
         if word is not None:
@@ -23,7 +24,8 @@ class GuessBar(tk.Frame):
 
         # Initialise the letter boxes, if the letter_boxes_colour_locked is True then the letter boxes colours will be
         # locked to stop the user marking them as good/placed. Used for the editable guess bar
-        self.letter_boxes = [LetterBox(self, tv=self.word[x], position=x, colour_locked=letter_boxes_colour_locked) for x in range(5)]
+        self.letter_boxes = [LetterBox.LetterBox(self, tv=self.word[x], position=x, colour_locked=letter_boxes_colour_locked) for
+                             x in range(5)]
 
         for i, v in enumerate(self.letter_boxes):
             self.letter_boxes[i].grid(row=0, column=i)
@@ -38,6 +40,28 @@ class GuessBar(tk.Frame):
 
     def getLetterBoxes(self):
         return self.letter_boxes
+
+    def addDuplicateLettersToHelper(self):
+        """
+        If any letters in the guess appear multiple times, either good or placed, then try to add it to the duplicate
+        letters list
+
+        :return:
+        """
+        seen_good_or_placed_letters = []
+
+        for letter_box in self.letter_boxes:
+            letter = letter_box.getLetter()
+
+            # If the letter is coloured
+            if letter_box.placed_letter or letter_box.good_letter:
+                # If the letter hasn't been 'seen' yet in the loop through the letters then mark it as 'seen'
+                if letter not in seen_good_or_placed_letters:
+                    seen_good_or_placed_letters.append(letter)
+                else:
+                    # Otherwise, it has been 'seen' and this letter is a duplicate in this guess, so it should be added
+                    # to the Helper as a duplicate letter
+                    self.program_interface.whh.setDuplicateLetter(letter)
 
 
 class GuessBarEditable(GuessBar):
