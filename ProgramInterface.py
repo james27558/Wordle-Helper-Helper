@@ -104,8 +104,6 @@ class ProgramInterface(tk.Tk):
             for letter_box in bar.letter_boxes:
                 letter_box.softResetColourScheme()
 
-
-
     def addNewGuessToBoard(self, guess: string):
         """
         Adds a new static guess to the board and moves down the editable guess box, adding the letters in the guess to
@@ -126,11 +124,11 @@ class ProgramInterface(tk.Tk):
         # Add it to the list of bars
         self.all_guess_bars.append(new_bar)
 
-        # Move the index further down the pane
-        self.next_guess_bar_row_index += 1
-
         # Move the editable guess box down
         self.current_guess_bar.grid(column=0, row=self.next_guess_bar_row_index + 1, columnspan=5)
+
+        # Move the index further down the pane
+        self.next_guess_bar_row_index += 1
 
         # Reset the word in the bar
         self.current_guess_bar.reset()
