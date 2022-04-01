@@ -35,9 +35,6 @@ class WordleHelperHelperTestCase(unittest.TestCase):
             for j in excluded_letters:
                 self.assertTrue(j not in i)
 
-    def test_settingConflictingPlacedBadLetters_throwsValueError(self):
-        self.whh.setPlacedLetter("a", 1)
-        self.assertRaises(ValueError, self.whh.setBadLetter, "a")
 
     def test_settingConflictingBadPlacedLetters_OverwritesBadLetter(self):
         self.whh.setBadLetter("a")
@@ -85,6 +82,15 @@ class WordleHelperHelperTestCase(unittest.TestCase):
 
         self.whh.deleteGoodLetter("a", 1)
         self.assertTrue("a" in self.whh.getBadLettersList())
+
+    def test_RevealingDuplicatePlacedGoodLetter_EliminatesWordsWithoutThatDuplicateLetter(self):
+        self.whh.setPlacedLetter("b", 1)
+        self.whh.setGoodLetter("b", 2)
+        self.whh.setDuplicateLetter("b")
+
+        for word in self.whh.filterWords():
+            self.assertTrue(word.count("b") > 1, word + " has 1 or fewer b's")
+
 
 if __name__ == '__main__':
     unittest.main()
