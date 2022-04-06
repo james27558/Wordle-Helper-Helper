@@ -1,6 +1,7 @@
 import string
 import tkinter as tk
 import ProgramInterface
+import WordleHelperHelper
 
 
 class GuessBar(tk.Frame):
@@ -29,6 +30,8 @@ class GuessBar(tk.Frame):
         for i, v in enumerate(self.letter_boxes):
             self.letter_boxes[i].grid(row=0, column=i)
 
+        self.confirmed_duplicate_letters = []
+
     def getFullWord(self):
         """
         Get all the letters in the letter boxes joined into one string, the contents of blank boxes will not appear
@@ -41,26 +44,42 @@ class GuessBar(tk.Frame):
         return self.letter_boxes
 
     def addDuplicateLettersToHelper(self):
-        """
+        f"""
         If any letters in the guess appear multiple times, either good or placed, then try to add it to the duplicate
-        letters list
+        letters list of the @{WordleHelperHelper} and track the new duplicate letters
 
         :return:
         """
-        seen_good_or_placed_letters = []
+        self.confirmed_duplicate_letters = self.getDuplicateGoodPlacedLetters()
 
-        for letter_box in self.letter_boxes:
-            letter = letter_box.getLetter()
+        for letter in self.confirmed_duplicate_letters:
+            # Add to the Helper as a duplicate letter
+            self.program_interface.whh.setDuplicateLetter(letter)
 
-            # If the letter is coloured
-            if letter_box.placed_letter or letter_box.good_letter:
-                # If the letter hasn't been 'seen' yet in the loop through the letters then mark it as 'seen'
-                if letter not in seen_good_or_placed_letters:
-                    seen_good_or_placed_letters.append(letter)
-                else:
-                    # Otherwise, it has been 'seen' and this letter is a duplicate in this guess, so it should be added
-                    # to the Helper as a duplicate letter
-                    self.program_interface.whh.setDuplicateLetter(letter)
+    def deleteDuplicateLettersFromHelper(self):
+        """
+        If any letters were duplicate but now aren't, then remove those letters from the @{WordleHelperHelper} and
+        track the new duplicate letters
+
+        :return:
+        """
+        new_duplicate_letters = self.getDuplicateGoodPlacedLetters()
+
+        letter_difference = set(self.confirmed_duplicate_letters) - set(new_duplicate_letters)
+
+        for letter in letter_difference:
+            # Remove the duplicate letter from Helper
+            self.program_interface.whh.deleteDuplicateLetter(letter)
+
+    def getDuplicateGoodPlacedLetters(self):
+        """
+        Gets the list of duplicate good/placed letters, e.g. 2 yellow a's, 1 yellow and 1 green a, 2 green a's etc.
+        :return:
+        """
+        good_or_placed_contents = [box.getLetter() for box in self.letter_boxes if box.placed_letter or box.good_letter]
+        duplicate_letters = set([letter for letter in good_or_placed_contents if good_or_placed_contents.count(letter) > 1])
+
+        return list(duplicate_letters)
 
 
 class GuessBarEditable(GuessBar):
@@ -138,13 +157,14 @@ class GuessBarEditable(GuessBar):
 
 
 class LetterBox(tk.Label):
-    def __init__(self, master: GuessBar, tv, position, colour_locked = False):
+    def __init__(self, master: GuessBar, tv, position, colour_locked=False):
         """
         :param master:
         :param tv:
         :param position: 0 indexed position
         """
         super(LetterBox, self).__init__(master, bg="black", fg="white", padx=5, pady=5, width=1, textvariable=tv)
+        # self.master and my_master are the same but use my_master to enable type hints
         self.my_master = master
         self.position = position
         self.colour_locked = colour_locked
@@ -176,6 +196,7 @@ class LetterBox(tk.Label):
             self.program_interface.whh.deletePlacedLetter(self.tv.get(), self.position)
             self.__defaultColourScheme()
             self.placed_letter = False
+            self.my_master.deleteDuplicateLettersFromHelper()
 
     def parseRightClick(self, click):
         """
@@ -196,6 +217,7 @@ class LetterBox(tk.Label):
             self.program_interface.whh.deleteGoodLetter(self.tv.get(), self.position)
             self.__defaultColourScheme()
             self.good_letter = False
+            self.my_master.deleteDuplicateLettersFromHelper()
 
     def softResetColourScheme(self):
         self.good_letter = False

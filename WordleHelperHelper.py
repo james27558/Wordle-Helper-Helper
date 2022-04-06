@@ -214,6 +214,17 @@ class WordleHelperHelper:
         # If the removed placed letter doesn't appear anywhere else as a good letter then
         self.addLetterToBadListIfNotInGoodOrPlaced(placed_letter)
 
+    def deleteDuplicateLetter(self, letter: str):
+        """
+        Deletes a duplicate letter, if the letter isn't present then it does nothing
+
+        :param letter: Letter to delete from the duplicate letters list
+        :return:
+        """
+
+        if letter in self.getDuplicateLetters():
+            self.duplicate_letters.remove(letter)
+
     def addLetterToBadListIfNotInGoodOrPlaced(self, letter: str):
         """
         If a letter is not in any of the good or placed list, then it is added to the list of bad letters
