@@ -19,6 +19,11 @@ class WordleHelperHelper:
         self.all_answers: list[str] = []
 
         """
+        List of all accepted guesses
+        """
+        self.all_guesses : list[str] = []
+
+        """
         List of characters that are the bad letters for the current word
         """
         self.bad_letters = []
@@ -87,7 +92,7 @@ class WordleHelperHelper:
 
     def fetchAndStoreWords(self):
         """
-        Fetches the list of words from the github repository and stores them in the class
+        Fetches the list of possible answers and guesses from the github repository and stores them in the class
         :return:
         """
         headers = requests.utils.default_headers()
@@ -101,6 +106,22 @@ class WordleHelperHelper:
         soup = BeautifulSoup(page.content, "lxml")
 
         self.all_answers = soup.p.text.split("\n")
+
+        # Get guesses
+
+        headers = requests.utils.default_headers()
+        headers.update({
+            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
+        })
+
+        URL = "https://gist.githubusercontent.com/cfreshman/40608e78e83eb4e1d60b285eb7e9732f/raw/2f51b4f2bb96c02e1dee37808b2eed4ef23a3150/wordle-nyt-allowed-guesses.txt"
+        page = requests.get(URL, headers=headers)
+
+        soup = BeautifulSoup(page.content, "lxml")
+
+        self.all_guesses = soup.p.text.split("\n")
+
+
 
     def setGuess(self, guess: string):
         self.guesses.append(guess)

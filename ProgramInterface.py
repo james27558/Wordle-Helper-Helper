@@ -114,6 +114,9 @@ class ProgramInterface(tk.Tk):
         :return:
         """
 
+        # If the guess isn't in the guess/answer list then don't accept it as a guess
+        if guess not in self.whh.all_answers and guess not in self.whh.all_guesses: return
+
         # Extract bad letters when adding guess
         self.whh.extractBadLetters(guess)
 
